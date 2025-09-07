@@ -17,10 +17,6 @@ def main() -> None:
     with Image.open(path) as img:
         img = img.convert("L")
         width, height = img.size
-        if width != height:
-            raise ValueError(
-                f"Input photo must be square; got {width}x{height}"
-            )
         pixels = list(img.getdata())
 
     matrix: List[List[int]] = [
