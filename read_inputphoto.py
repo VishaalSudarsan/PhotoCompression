@@ -52,7 +52,7 @@ def find_vertical_symmetry(matrix: List[List[int]]) -> Tuple[int, List[List[int]
     best_mid = 0
     best_loss = float("inf")
 
-    for mid in range(width):
+    for mid in range(int(width/4), int(3*width/4)):
         max_a = min(mid, width - mid - 1)
         if max_a == 0:
             continue
