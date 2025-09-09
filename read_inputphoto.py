@@ -8,8 +8,9 @@ import numpy as np
 from PIL import Image
 
 
-def main() -> None:
-    path = Path("inputphoto.jpg")
+def read_input_photo(path: Path = Path("inputphoto.jpg")) -> List[List[int]]:
+    """Read ``path`` and convert the image to a grayscale matrix."""
+
     data = path.read_bytes()
     print(f"Read {len(data)} bytes from {path.name}")
     preview = " ".join(f"{byte:02x}" for byte in data[:20])
@@ -30,18 +31,17 @@ def main() -> None:
     print(f"Image converted to {width}x{height} grayscale matrix")
     top_left = [row[:5] for row in matrix[:5]]
     print(f"Top-left 5x5 block: {top_left}")
-    mid, left_matrix = find_vertical_symmetry(matrix)
-    print(f"Best vertical symmetry at column {mid}")
-    print(f"Left matrix up to mid has shape {len(left_matrix)}x{len(left_matrix[0]) if left_matrix else 0}")
+    return matrix
 
 
 def find_vertical_symmetry(matrix: List[List[int]]) -> Tuple[int, List[List[int]]]:
     """Return the column index forming the best vertical symmetry.
 
     For each possible ``mid`` column the routine computes a loss equal to the
-    sum of squared differences between pixels mirrored across ``mid``. The
-    ``mid`` that minimises this loss is returned along with the portion of the
-    matrix up to (but not including) ``mid``.
+    trace of ``diff`` multiplied by its transpose, where ``diff`` is the
+    difference between pixels mirrored across ``mid``. The ``mid`` that
+    minimises this loss is returned along with the portion of the matrix up to
+    (but not including) ``mid``.
     """
 
     if not matrix or not matrix[0]:
@@ -60,9 +60,7 @@ def find_vertical_symmetry(matrix: List[List[int]]) -> Tuple[int, List[List[int]
         left = arr[:, mid - max_a : mid][:, ::-1]
         right = arr[:, mid + 1 : mid + max_a + 1]
         diff = left - right
-        ones_row = np.ones((1, height))
-        ones_col = np.ones((max_a, 1))
-        loss = float(ones_row @ (diff ** 2) @ ones_col)
+        loss = float(np.trace(diff @ diff.T))
 
         if loss < best_loss:
             best_loss = loss
@@ -70,6 +68,14 @@ def find_vertical_symmetry(matrix: List[List[int]]) -> Tuple[int, List[List[int]
 
     left_matrix = arr[:, :best_mid].tolist()
     return best_mid, left_matrix
+
+def main() -> None:
+    matrix = read_input_photo()
+    mid, left_matrix = find_vertical_symmetry(matrix)
+    print(f"Best vertical symmetry at column {mid}")
+    print(
+        f"Left matrix up to mid has shape {len(left_matrix)}x{len(left_matrix[0]) if left_matrix else 0}"
+    )
 
 
 if __name__ == "__main__":
