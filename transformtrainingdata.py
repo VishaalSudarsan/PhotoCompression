@@ -20,16 +20,13 @@ def read_photos_from_data_folder(data_folder: Path = Path("data")) -> List[List[
         print(f"Read {photo_path.name}: {len(vector)} pixels")
     return vectors
 
-def apply_pca(vectors: List[List[int]], n_components: int = 50) -> np.ndarray:
-    """Apply PCA to the matrix of photo vectors."""
-    X = np.array(vectors)
-    pca = PCA(n_components=n_components)
-    X_pca = pca.fit_transform(X)
-    print(f"PCA reduced shape: {X_pca.shape}")
-    return X_pca
+def save_pixel_matrix(matrix: List[List[int]], filename: str = "pixel_matrix.npy") -> None:
+    """Save the matrix of pixel vectors to a .npy file."""
+    np.save(filename, np.array(matrix))
+    print(f"Pixel matrix saved to {filename}")
+
 
 vectors = read_photos_from_data_folder()
 print(f"Total photos processed: {len(vectors)}")
 if vectors:
-    X_pca = apply_pca(vectors)
-    print("PCA transformation complete.")
+    save_pixel_matrix(vectors)  # Save the pixel matrix
