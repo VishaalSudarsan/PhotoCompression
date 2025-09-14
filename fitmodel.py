@@ -9,7 +9,7 @@ def read_pixel_matrix(filename: str = "pixel_matrix.npy") -> np.ndarray:
     print(f"Loaded pixel matrix with shape {matrix.shape}")
     return matrix
 
-def apply_pca(vectors: List[List[int]], n_components: int = 2000) -> np.ndarray:
+def apply_pca(vectors: List[List[int]], n_components: int = 5000) -> np.ndarray:
     """Apply PCA to the matrix of photo vectors."""
     X = np.array(vectors)
     pca = PCA(n_components=n_components)

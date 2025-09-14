@@ -5,9 +5,13 @@ from sklearn.decomposition import PCA
 import numpy as np
 
 def photo_to_vector(photo_path: Path) -> List[int]:
+    # White background
+    bg = Image.new("RGBA", (240, 240), (255, 255, 255, 255))
+
     """Convert a photo to a grayscale pixel vector."""
     with Image.open(photo_path) as img:
-        img = img.convert("L")
+        composite = Image.alpha_composite(bg, img)
+        img = composite.convert("L")
         pixels = list(img.getdata())
     return pixels
 
