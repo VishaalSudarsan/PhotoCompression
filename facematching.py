@@ -3,6 +3,7 @@ import numpy as np
 import pickle
 from PIL import Image
 from pathlib import Path
+from scipy.spatial import distance
 
 def downsample_image(image_path: Path) -> Image:
     """Read a single image and downsample it to 240*240 pixel."""
@@ -42,10 +43,8 @@ compressed_data = np.load('compresseddata.npy')
 best_match = None
 best_match_percent = 0
 for i, row in enumerate(compressed_data):
-    from skimage.metrics import structural_similarity as ssim
-    diff = row - compressed_image[0]
-    ssim = ssim(diff, compressed_image[0], data_range=diff.max() - diff.min())
-    match_percent = ssim
+    mahalanobis_distance = distance.mahalanobis(compressed_image[0], compressed_data[i], pca.components_.T)
+    match_percent = 1 - mahalanobis_distance/mahalanobis_distance.max()
     if match_percent > best_match_percent:
         best_match = i
         best_match_percent = match_percent

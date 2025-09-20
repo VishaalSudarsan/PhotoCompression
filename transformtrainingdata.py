@@ -5,8 +5,8 @@ from sklearn.decomposition import PCA
 import numpy as np
 
 def photo_to_vector(photo_path: Path) -> List[int]:
-    # White background
-    bg = Image.new("RGBA", (240, 240), (255, 255, 255, 255))
+    # Green background
+    bg = Image.new("RGBA", (240, 240), (0, 255, 0, 255))
 
     """Convert a photo to a grayscale pixel vector."""
     with Image.open(photo_path) as img:
